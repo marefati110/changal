@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // ES6 or later
+    "module": "CommonJS", // CommonJS for Node.js compatibility
+    "declaration": true, // Generates .d.ts files for TypeScript typings
+    "outDir": "./dist", // Output directory for compiled JavaScript
+    "strict": true, // Enables strict type checking
+    "esModuleInterop": true // Better support for importing CommonJS modules
+  },
+  "include": ["src/**/*.ts"], // Source files to include
+  "exclude": ["node_modules", "dist"]
+}
