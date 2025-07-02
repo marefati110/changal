@@ -7,6 +7,6 @@
     "strict": true, // Enables strict type checking
     "esModuleInterop": true // Better support for importing CommonJS modules
   },
-  "include": ["src/**/*.ts"], // Source files to include
+  "include": ["src/**/*.ts", "./types.d.ts"], // Source files to include
   "exclude": ["node_modules", "dist"]
 }

@@ -6,12 +6,13 @@ import { createBullBoard } from '@bull-board/api';
 import { ExpressAdapter } from '@bull-board/express';
 import { Logger } from '../log/log';
 import { Queue as QueueMQ } from 'bullmq';
+import { Queue as bullmqQueue } from 'bullmq';
+import { JOBS } from '../..';
 
 const createQueueMQ = (name: string) => new QueueMQ(name);
 
 export class Server {
   private port: number;
-
   private server: Express;
 
   constructor(port = 3000) {
@@ -20,13 +21,28 @@ export class Server {
   }
 
   private setupBullBoard() {
-    const exampleBullMq = createQueueMQ('BullMQ');
+    const queues = [];
+
+    for (const item of JOBS) {
+      if (item.urlQueue) {
+        queues.push(new BullMQAdapter(item.urlQueue as QueueMQ));
+      }
+
+      if (item.dataQueue) {
+        queues.push(new BullMQAdapter(item.dataQueue as QueueMQ));
+      }
+    }
+
+    // const urlQueue = JOBS.filter((item) => item.urlQueue).map((item) => new BullMQAdapter(item.urlQueue));
+    // const dataQueue = JOBS.filter((item) => item.dataQueue).map((item) => new BullMQAdapter(item.dataQueue));
+
+    // const queues = [...urlQueue, ...dataQueue];
 
     const serverAdapter = new ExpressAdapter();
     serverAdapter.setBasePath('/ui');
 
     createBullBoard({
-      queues: [new BullMQAdapter(exampleBullMq)],
+      queues: queues,
       serverAdapter,
     });
 
@@ -34,6 +50,7 @@ export class Server {
   }
 
   async start() {
+    //
     this.setupBullBoard();
 
     this.server.listen(this.port);
